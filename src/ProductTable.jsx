@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 const ProductTable = ({ products, onUpdateProduct, onDeleteProduct }) => {
   const [editedProduct, setEditedProduct] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleEditClick = (product) => {
     setEditedProduct({ ...product });
@@ -27,9 +28,27 @@ const ProductTable = ({ products, onUpdateProduct, onDeleteProduct }) => {
     });
   };
 
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  // Filtrar los productos por código o nombre
+  const filteredProducts = products.filter(
+    (product) =>
+      product.code.includes(searchTerm) ||
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="my-4">
       <h2>Lista de Productos</h2>
+      <input
+        type="text"
+        placeholder="Buscar por código o nombre"
+        value={searchTerm}
+        onChange={handleSearchChange}
+      />
+
       <table className="table table-hover">
         <thead className="thead-dark">
           <tr>
@@ -40,8 +59,20 @@ const ProductTable = ({ products, onUpdateProduct, onDeleteProduct }) => {
           </tr>
         </thead>
         <tbody>
-          {products.map((product, index) => (
+          {filteredProducts.map((product, index) => (
             <tr key={product.id}>
+              <td>
+                {editedProduct && editedProduct.id === product.id ? (
+                  <input
+                    type="text"
+                    name="code"
+                    value={editedProduct.code}
+                    onChange={handleInputChange}
+                  />
+                ) : (
+                  product.code
+                )}
+              </td>
               <td>
                 {editedProduct && editedProduct.id === product.id ? (
                   <input
@@ -64,18 +95,6 @@ const ProductTable = ({ products, onUpdateProduct, onDeleteProduct }) => {
                   />
                 ) : (
                   `$${product.price}`
-                )}
-              </td>
-              <td>
-                {editedProduct && editedProduct.id === product.id ? (
-                  <input
-                    type="text"
-                    name="code"
-                    value={editedProduct.code}
-                    onChange={handleInputChange}
-                  />
-                ) : (
-                  product.code
                 )}
               </td>
               <td>

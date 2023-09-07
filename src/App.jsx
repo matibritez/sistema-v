@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { collection, addDoc, updateDoc, doc, deleteDoc, getDocs } from 'firebase/firestore';
 import db from './firebase'; // Importa la instancia de Firestore
 import ProductTable from "./ProductTable";
@@ -6,35 +6,40 @@ import ProductForm from "./ProductForm";
 import 'bootstrap/dist/css/bootstrap.min.css'; // Importa Bootstrap
 import Navbar from "./Navbar";
 
-// Resto de tu código
-
-
-
 const App = () => {
   const [products, setProducts] = useState([]);
   const [editedProduct, setEditedProduct] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  // Define fetchData utilizando useCallback
+  const fetchData = useCallback(async () => {
     try {
-      const productCollection = collection(db, 'products');
+      const productCollection = collection(db, "products");
       const querySnapshot = await getDocs(productCollection);
       const productsData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
 
-      // Ordenar los productos alfabéticamente por nombre
-      productsData.sort((a, b) => a.name.localeCompare(b.name));
+      // Filtrar los productos por código o nombre
+      const filteredProducts = productsData.filter(
+        (product) =>
+          product.code.includes(searchTerm) ||
+          product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
 
-      setProducts(productsData);
+      // Ordenar los productos alfabéticamente por nombre
+      filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+
+      setProducts(filteredProducts);
     } catch (error) {
-      console.error('Error al obtener los productos:', error);
+      console.error("Error al obtener los productos:", error);
     }
-  };
+  }, [searchTerm]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const addProduct = async (newProduct) => {
     try {
@@ -70,11 +75,15 @@ const App = () => {
     }
   };
 
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
   return (
     <div className="container">
       <h1>Sistema de Ventas</h1>
       <div className="row">
-        <Navbar/>
+        <Navbar />
         <div className="col-md-9">
           <ProductForm onAddProduct={addProduct} />
         </div>
@@ -87,6 +96,8 @@ const App = () => {
             onSaveEdit={setEditedProduct}
             editedProduct={editedProduct}
             onDeleteProduct={deleteProduct}
+            searchTerm={searchTerm}
+            onSearchChange={handleSearchChange}
           />
         </div>
       </div>
