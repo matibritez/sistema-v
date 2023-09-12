@@ -1,29 +1,32 @@
-import React, { useState } from "react";
-
+import React from "react";
+import { Link} from "react-router-dom"; // Importa useLocation
 
 const Navbar = () => {
-  // Definición de estado para controlar la apertura/cierre del menú
-  const [isOpen, setIsOpen] = useState(false);
+ 
 
-  // Función para alternar la visibilidad del menú
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
+ 
 
   return (
-    <div className={`sidebar ${isOpen ? "open" : ""}`}>
-      {/* Botón para abrir/cerrar el menú */}
-      <button className="toggle-button" onClick={toggleSidebar}>
-        ☰
-      </button>
-      {/* Lista de elementos de menú */}
-      <ul className="menu">
-        <li>Inicio</li>
-        <li>Productos</li>
-        <li>Contacto</li>
-      </ul>
-    </div>
+    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      <div className="container-fluid">
+        <Link className="navbar-brand" to="/">
+          Inicio
+        </Link>
+        <div className="collapse navbar-collapse">
+          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            <li className="nav-item">
+              <Link className="nav-link" to="/listas">
+                Listas
+              </Link>
+            </li>
+          </ul>
+          
+        </div>
+      </div>
+    </nav>
   );
 };
 
 export default Navbar;
+
+

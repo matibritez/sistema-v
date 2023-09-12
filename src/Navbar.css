@@ -1,0 +1,35 @@
+/* Navbar Container */
+.navbar {
+    background-color: #333; /* Cambia el color de fondo según tus preferencias */
+    color: #fff; /* Cambia el color de texto según tus preferencias */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+  }
+  
+  /* Navbar Toggle Button */
+  .navbar-toggle {
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  /* Navbar Menu */
+  .navbar-menu {
+    list-style: none;
+    display: flex;
+    gap: 20px; /* Espaciado entre elementos del menú */
+    margin: 0;
+    padding: 0;
+  }
+  
+  .navbar-menu li {
+    font-size: 18px; /* Tamaño de fuente del menú */
+    cursor: pointer;
+  }
+  
+  /* Estilo para el menú abierto */
+  .navbar-menu.open {
+    display: block;
+  }
+  
